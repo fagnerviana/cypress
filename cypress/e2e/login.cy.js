@@ -1,37 +1,44 @@
+import Login from '../e2e/acessoSefaz/login'
 describe('Login', ()=>{
 
     beforeEach(() =>{
-        cy.visit('https://ba.gp.srv.br/tributario_salvador_tst/servlet/login')
+        Login.visitarpagina();        
+        
     })
-    it('Realizar login com sucesso',()=>{
-        //Arrange
-        //Utilizado o beforeEach
-        //cy.visit('https://ba.gp.srv.br/tributario_salvador_tst/servlet/login')
-        //Act
-        cy.screenshot('https://ba.gp.srv.br/tributario_salvador_tst/servlet/login')
-        cy.get('[class="AttributeLogin mascaracpfcnpj form-control"]').type('12345678909')
-        cy.get('#USUARIO_SENHAContainer > .form-group > .gx-attribute > .form-control').type('123456')
-        cy.get('[class="BtnEnter BtnLogin btn btn-default btn-primary"]').click()
 
+    it('Realizar login com sucesso',()=>{
+         //Act
+        Login.credenciaisValidasAdministrador();
+        cy.screenshot('https://ba.gp.srv.br/tributario_salvador_tst/servlet/login')
+        
         //Assert
-        cy.url().should('eq', 'https://ba.gp.srv.br/tributario_salvador_tst/servlet/principal')
+        cy.url().should('eq', 'https://ba.gp.srv.br/tributario_salvador_tst/servlet/login')
         
     })
     it('Realizar login informando credenciais inválidas',()=> {
-       //Arrange
-       //Utilizado o beforeEach
-       //cy.visit('https://ba.gp.srv.br/tributario_salvador_tst/servlet/login')
-
         //Act
-        cy.get('[class="AttributeLogin mascaracpfcnpj form-control"]').type('12345678')
-        cy.get('#USUARIO_SENHAContainer > .form-group > .gx-attribute > .form-control').type('12345')
-        cy.get('[class="BtnEnter BtnLogin btn btn-default btn-primary"]').click()
+        Login.credenciaisInvalidasr();
 
         //Assert
-        cy.get('[class="swal2-html-container"]')
+        //Analisa mensagem de erro
+        cy.get(LargestContentfulPaint.validarErrorCredenciaisInvalidas)
+        cy.url().should('eq','https://ba.gp.srv.br/tributario_salvador_tst/servlet/login')
+
+    })
+
+    it('Validar Campo de Usuario (CPF/CNPJ)',()=> {
+
+        //Act
+       Login.credenciaisInvalidasr();
+       
+        //Assert
+        //Analisa mensagem de erro
+        cy.get(Login.visitarpagina)
         .should(
             'contain.text',
             'CPF/CNPJ informado é inválido!')
-        cy.url().should('eq','https://ba.gp.srv.br/tributario_salvador_tst/servlet/login')
+        cy.url().should('eq',Login.visitarpagina)
+
     })
+
 })
